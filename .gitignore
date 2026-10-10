@@ -1,0 +1,32 @@
+# --- Python ---
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Test artifacts ---
+reports/
+test-results/
+*.html
+
+# --- Playwright ---
+# NOTE: auth.json holds live session cookies/localStorage.
+# Never commit it. In CI, generate it at runtime or inject from secrets.
+auth/auth.json
+storage_state.json
+
+# --- Secrets / local config ---
+.env
+.env.*
+!.env.example
+
+# --- IDE / OS ---
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+desktop.ini
