@@ -1,15 +1,9 @@
-from collections.abc import Generator
 
 import pytest
-from playwright.sync_api import APIRequestContext, Playwright
+from playwright.sync_api import APIRequestContext
 from pages.api_client import PostsClient
 
 
-@pytest.fixture
-def api(playwright: Playwright) -> Generator[APIRequestContext,None,None]:
-    ctx = playwright.request.new_context()
-    yield ctx
-    ctx.dispose()
 
 
 @pytest.fixture
