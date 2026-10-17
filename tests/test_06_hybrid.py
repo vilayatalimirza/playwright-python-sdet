@@ -5,9 +5,11 @@ two independent targets - in a real app both halves hit the same system.
 """
 
 import re
+from collections.abc import Generator
+
 import pytest
 from faker import Faker
-from playwright.sync_api import APIRequestContext, Page, expect
+from playwright.sync_api import APIRequestContext, Page, Playwright, expect
 
 from pages.api_client import PostsClient
 from pages.login_page import LoginPage
@@ -18,11 +20,16 @@ def fake() -> Faker:
     return Faker()
 
 
-def test_api_created_data_is_visible_in_ui(
-    page: Page, request: APIRequestContext, fake: Faker
-):
+@pytest.fixture
+def api(playwright: Playwright) -> Generator[APIRequestContext, None, None]:
+    ctx = playwright.request.new_context()
+    yield ctx
+    ctx.dispose()
+
+
+def test_api_created_data_is_visible_in_ui(page: Page, api: APIRequestContext, fake: Faker):
     # ---- Arrange: create data over the API (fast, reliable) ----
-    posts = PostsClient(request)
+    posts = PostsClient(api)
     title = fake.sentence()
     assert posts.create_post(title=title, body="x").status == 201
 

@@ -1,14 +1,20 @@
-import pytest
-from playwright.sync_api import APIRequestContext, expect
+from collections.abc import Generator
 
+import pytest
+from playwright.sync_api import APIRequestContext, Playwright
 from pages.api_client import PostsClient
 
 
 @pytest.fixture
-def posts(request: APIRequestContext) -> PostsClient:
-    """Compose: pytest-playwright gives `request`, we wrap it."""
-    return PostsClient(request)
+def api(playwright: Playwright) -> Generator[APIRequestContext,None,None]:
+    ctx = playwright.request.new_context()
+    yield ctx
+    ctx.dispose()
 
+
+@pytest.fixture
+def posts(api: APIRequestContext) -> PostsClient:
+    return PostsClient(api)
 
 def test_get_post_returns_expected_shape(posts: PostsClient):
     response = posts.get_post(1)

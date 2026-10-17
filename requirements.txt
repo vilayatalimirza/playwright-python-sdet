@@ -1,0 +1,18 @@
+# --- Core: browser automation + test runner ---
+playwright==1.63.0
+pytest==9.1.1
+
+# --- pytest plugins ---
+pytest-playwright==0.10.0    # page/browser/context/request fixtures
+pytest-html==4.2.0           # HTML report
+pytest-bdd==9.0.0            # Gherkin / BDD support
+# pytest-xdist==3.8.0        # Phase 8: parallel execution
+
+# --- Test data ---
+faker==40.43.0
+
+# --- Config ---
+python-dotenv==1.2.4
+
+# --- Reporting (Phase 7) ---
+# allure-pytest==2.16.2
