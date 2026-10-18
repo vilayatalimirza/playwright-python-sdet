@@ -1,11 +1,12 @@
+from pathlib import Path
 import re
 from pytest_bdd import given, parsers, scenarios, then, when
 from playwright.sync_api import Page, expect
 from pages.login_page import LoginPage
 
-# Binds every scenario in features/login.feature to this module.
-scenarios("../../features/login.feature")
+FEATURE_FILE = Path(__file__).parent.parent.parent / "features" / "login.feature"
 
+scenarios(str(FEATURE_FILE))
 @given("I am on the login page")
 def on_login_page(login_page: LoginPage) -> LoginPage:
     """The login_page fixture already navigated us here. Nothing to do."""
