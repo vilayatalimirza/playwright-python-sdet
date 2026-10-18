@@ -30,3 +30,5 @@ storage_state.json
 *.swp
 Thumbs.db
 desktop.ini
+jenkins_home/
+reports/
