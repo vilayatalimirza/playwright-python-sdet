@@ -26,9 +26,10 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'docker run --rm -v "$PWD/reports:/app/reports" ${IMAGE_TAG} pytest -v --junitxml=reports/junit.xml'
+                sh 'mkdir -p reports'
+                sh 'docker run --rm --user $(id -u):$(id -g) -v "$PWD/reports:/app/reports" ${IMAGE_TAG} pytest -v --junitxml=reports/junit.xml'
             }
-        }
+        }   
     }
 
     post {
