@@ -26,8 +26,18 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'mkdir -p reports && chmod 777 reports'
-                sh 'docker run --rm -v "$PWD/reports:/app/reports" ${IMAGE_TAG} pytest -v --junitxml=reports/junit.xml'
+                sh 'mkdir -p reports'
+                // Create + start + copy out + clean up. No bind mount, so the
+                // nested Windows/WSL path problem cannot occur. docker cp goes
+                // through the Docker API, not the filesystem.
+                sh '''
+                    CID=$(docker create ${IMAGE_TAG} pytest -v --junitxml=reports/junit.xml)
+                    TEST_EXIT=0
+                    docker start -a "$CID" || TEST_EXIT=$?
+                    docker cp "$CID:/app/reports/." ./reports/ || true
+                    docker rm -f "$CID" || true
+                    exit $TEST_EXIT
+                '''
             }
         }
     }
@@ -35,7 +45,8 @@ pipeline {
     post {
         always {
             sh 'docker rmi ${IMAGE_TAG} || true'
-            archiveArtifacts artifacts: 'reports/**/*.html', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'reports/**/*.xml', allowEmptyArchive: true
+            echo 'Pipeline finished'
         }
         success {
             junit 'reports/*.xml'
